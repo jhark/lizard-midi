@@ -28,7 +28,7 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(lib);
 
     const app = b.addExecutable(.{
-        .name = "lizard-midi",
+        .name = "lizard-midi-tool",
         .root_source_file = .{ .path = "src/app/main.zig" },
         .target = target,
         .optimize = optimize,

@@ -14,11 +14,11 @@
 `lizard-midi` comes with a basic CLI application, which also serves as a usage sample.
 
 ```
-> lizard-midi help
+> lizard-midi-tool help
 
 Usage:
 
-  lizard-midi COMMAND ARGS...
+  lizard-midi-tool COMMAND ARGS...
 
 Available commands:
 
