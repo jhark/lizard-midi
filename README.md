@@ -56,10 +56,25 @@ Notes:
 ```
 .dependencies = .{
     .@"lizard-midi" = .{
+        .url = "https://github.com/jhark/lizard-midi/archive/refs/tags/v0.0.0.tar.gz",
+        .hash = "12206ecbd994ce94bd2758996ab9d065b1ffa299660cd3ddc96b6f2a3ee93d6dbf34",
+    },
+},
+```
+..or..
+```
+.dependencies = .{
+    .@"lizard-midi" = .{
         .path = "path/to/lizard-midi",
     },
 },
 ```
+
+You can also use `zig fetch --save` from within your project to add the
+dependency to your `build.zig.zon` file, calculating the hash for you upon
+download:
+
+`zig fetch --save https://github.com/jhark/lizard-midi/archive/COMMIT_HASH.tar.gz`
 
 `build.zig`:
 ```
@@ -68,9 +83,7 @@ const lizard_midi_dep = b.dependency("lizard-midi", .{
     .optimize = optimize,
 });
 
-const lizard_midi_module = b.addModule("lizard-midi", .{
-    .root_source_file = lizard_midi_dep.path("src/lib/root.zig"),
-});
+const lizard_midi_module = lizard_midi_dep.module("lizard-midi");
 
 // ...
 
