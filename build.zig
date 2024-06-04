@@ -11,13 +11,13 @@ pub fn build(b: *std.Build) void {
         .{
             .target = target,
             .optimize = optimize,
-            .root_source_file = .{ .path = "src/lib/root.zig" },
+            .root_source_file = b.path("src/lib/root.zig"),
         },
     );
 
     const lib = b.addStaticLibrary(.{
         .name = lib_name,
-        .root_source_file = .{ .path = "src/lib/root.zig" },
+        .root_source_file = b.path("src/lib/root.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -29,7 +29,7 @@ pub fn build(b: *std.Build) void {
 
     const app = b.addExecutable(.{
         .name = "lizard-midi-tool",
-        .root_source_file = .{ .path = "src/app/main.zig" },
+        .root_source_file = b.path("src/app/main.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -47,7 +47,7 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     const lib_unit_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/lib/root.zig" },
+        .root_source_file = b.path("src/lib/root.zig"),
         .target = target,
         .optimize = optimize,
     });
