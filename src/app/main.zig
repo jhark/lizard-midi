@@ -100,7 +100,10 @@ const Command = enum {
 };
 
 fn devices(args: []const []const u8) !void {
-    _ = args;
+    if (args.len != 0) {
+        std.debug.print("Expected no arguments.\n", .{});
+        std.process.exit(1);
+    }
 
     const stdout_file = std.io.getStdOut().writer();
     var bw = std.io.bufferedWriter(stdout_file);
@@ -179,7 +182,8 @@ fn devices(args: []const []const u8) !void {
 
 fn connect(args: []const []const u8) !void {
     if (args.len != 2) {
-        return error.BadArgs;
+        std.debug.print("Expected 2 arguments.\n", .{});
+        std.process.exit(1);
     }
     const input_device_id = try findInputDevice(args[0]);
     const output_device_id = try findOutputDevice(args[1]);
@@ -200,7 +204,8 @@ fn connect(args: []const []const u8) !void {
 
 fn monitor(args: []const []const u8) !void {
     if (args.len != 1) {
-        return error.BadArgs;
+        std.debug.print("Expected 1 argument.\n", .{});
+        std.process.exit(1);
     }
 
     const device_id = try findInputDevice(args[0]);
@@ -234,6 +239,11 @@ fn monitor(args: []const []const u8) !void {
 }
 
 fn arp(args: []const []const u8) !void {
+    if (args.len < 4) {
+        std.debug.print("Expected at least 4 arguments.\n", .{});
+        std.process.exit(1);
+    }
+
     const device_index = try findOutputDevice(args[0]);
     const length = try std.fmt.parseUnsigned(u32, args[1], 10);
     const delay = try std.fmt.parseUnsigned(u32, args[2], 10);
