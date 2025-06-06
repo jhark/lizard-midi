@@ -15,7 +15,7 @@ const Command = enum {
 
     const count = std.meta.tags(Command).len;
     const max_name_len: usize = maxCommandNameLen();
-    const Handler = *const fn (args: [][]const u8) anyerror!void;
+    const Handler = *const fn (args: []const []const u8) anyerror!void;
 
     const handlers = [count]Handler{
         devices,
@@ -25,7 +25,7 @@ const Command = enum {
         help,
     };
 
-    fn run(cmd: Command, args: [][]const u8) !void {
+    fn run(cmd: Command, args: []const []const u8) !void {
         return handlers[@intFromEnum(cmd)](args);
     }
 
@@ -60,7 +60,7 @@ const Command = enum {
     fn toStringPadded(comptime cmd: Command) []const u8 {
         comptime var s: []const u8 = @tagName(cmd);
         const name_len = s.len;
-        inline for (max_name_len - name_len) |_| {
+        inline for (0..max_name_len - name_len) |_| {
             s = s ++ " ";
         }
         return s;
@@ -92,14 +92,14 @@ const Command = enum {
 
     fn namePadding() []const u8 {
         comptime var s: []const u8 = "";
-        inline for (max_name_len) |_| {
+        inline for (0..max_name_len) |_| {
             s = s ++ " ";
         }
         return s;
     }
 };
 
-fn devices(args: [][]const u8) !void {
+fn devices(args: []const []const u8) !void {
     _ = args;
 
     const stdout_file = std.io.getStdOut().writer();
@@ -177,7 +177,7 @@ fn devices(args: [][]const u8) !void {
     }
 }
 
-fn connect(args: [][]const u8) !void {
+fn connect(args: []const []const u8) !void {
     if (args.len != 2) {
         return error.BadArgs;
     }
@@ -198,7 +198,7 @@ fn connect(args: [][]const u8) !void {
     try lizard_midi.disconnect(&input_device, &output_device);
 }
 
-fn monitor(args: [][]const u8) !void {
+fn monitor(args: []const []const u8) !void {
     if (args.len != 1) {
         return error.BadArgs;
     }
@@ -233,7 +233,7 @@ fn monitor(args: [][]const u8) !void {
     try input_device.stop();
 }
 
-fn arp(args: [][]const u8) !void {
+fn arp(args: []const []const u8) !void {
     const device_index = try findOutputDevice(args[0]);
     const length = try std.fmt.parseUnsigned(u32, args[1], 10);
     const delay = try std.fmt.parseUnsigned(u32, args[2], 10);
@@ -296,7 +296,7 @@ fn arp(args: [][]const u8) !void {
     try device.close();
 }
 
-fn help(args: [][]const u8) !void {
+fn help(args: []const []const u8) !void {
     const Local = struct {
         fn badArgs() !void {
             std.debug.print("Expected a single argument, one of: {s}\n", .{Command.list()});
@@ -408,11 +408,11 @@ fn plural(n: usize) []const u8 {
 fn findInputDevice(s: []const u8) !usize {
     return std.fmt.parseUnsigned(usize, s, 10) catch
         return lizard_midi.InputDevice.find(s) orelse
-        error.DeviceNotFound;
+            error.DeviceNotFound;
 }
 
 fn findOutputDevice(s: []const u8) !usize {
     return std.fmt.parseUnsigned(usize, s, 10) catch
         return lizard_midi.OutputDevice.find(s) orelse
-        error.DeviceNotFound;
+            error.DeviceNotFound;
 }

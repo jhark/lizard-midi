@@ -97,14 +97,14 @@ pub fn open(self: *InputDevice, device_index: usize, event_handler: anytype) Err
     const EventHandlerParam = @TypeOf(event_handler);
 
     switch (@typeInfo(EventHandlerParam)) {
-        .Null => {
+        .null => {
             self.handle = try winmm.inputOpen(
                 device_index32,
                 @as(usize, 0),
                 DummyEventHandler.handleEvent,
             );
         },
-        .Pointer => |ti| {
+        .pointer => |ti| {
             const EventHandler = ti.child;
             self.handle = try winmm.inputOpen(
                 device_index32,

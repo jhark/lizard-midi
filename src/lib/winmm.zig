@@ -211,7 +211,7 @@ pub inline fn inputOpen(
             event: InputEvent,
         ) void {
             const ctxT: Context = switch (@typeInfo(Context)) {
-                .Pointer => @ptrFromInt(ctxo),
+                .pointer => @ptrFromInt(ctxo),
                 else => @intCast(ctxo),
             };
             callback(ctxT, device_handle, event);
@@ -219,7 +219,7 @@ pub inline fn inputOpen(
     };
 
     const instance: win32.DWORD_PTR = switch (@typeInfo(Context)) {
-        .Pointer => @intFromPtr(ctx),
+        .pointer => @intFromPtr(ctx),
         else => @intCast(ctx),
     };
 
@@ -282,7 +282,7 @@ pub fn inputDeviceInfo(device_index: usize, info: *InputDeviceInfo) !void {
     const mmr = win32.midiInGetDevCapsW(@intCast(device_index), &caps, @intCast(@sizeOf(win32.MIDIINCAPSW)));
     try checkInputMmResult(mmr);
 
-    const name_len = try std.unicode.utf16leToUtf8(&info._name_buf, nullTerminated(&caps.szPname));
+    const name_len = try std.unicode.utf16LeToUtf8(&info._name_buf, nullTerminated(&caps.szPname));
     info.name = info._name_buf[0..name_len];
     info.capabilities = @bitCast(caps.dwSupport);
     info.driver_version = caps.vDriverVersion;
@@ -527,7 +527,7 @@ pub fn outputDeviceInfo(device_index: usize, info: *OutputDeviceInfo) !void {
     const mmr = win32.midiOutGetDevCapsW(@intCast(device_index), &caps, @intCast(@sizeOf(win32.MIDIOUTCAPSW)));
     try checkOutputMmResult(mmr);
 
-    const name_len = try std.unicode.utf16leToUtf8(&info._name_buf, nullTerminated(&caps.szPname));
+    const name_len = try std.unicode.utf16LeToUtf8(&info._name_buf, nullTerminated(&caps.szPname));
     info.name = info._name_buf[0..name_len];
     info.capabilities = @bitCast(caps.dwSupport);
     info.driver_version = caps.vDriverVersion;
@@ -648,7 +648,7 @@ fn getErrorMessage(err_text_fn: ErrTextFn, allocator: std.mem.Allocator, mmr: wi
     var buf: [win32.MAXERRORLENGTH]u16 = std.mem.zeroes([win32.MAXERRORLENGTH]u16);
     const textMmr = err_text_fn(mmr, &buf, buf.len);
     try maybeRaiseSysErrMm(textMmr);
-    return std.unicode.utf16leToUtf8AllocZ(allocator, &buf);
+    return std.unicode.utf16LeToUtf8AllocZ(allocator, &buf);
 }
 
 fn getErrorMessageFixed(err_text_fn: ErrTextFn, buf: []u8, mmr: win32.MMRESULT) ![]u8 {

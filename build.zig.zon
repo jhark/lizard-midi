@@ -1,7 +1,8 @@
 .{
-    .name = "lizard-midi",
+    .name = .lizard_midi,
+    .fingerprint = 0x8c130fbdcd95119e,
     .version = "0.0.0",
-    .minimum_zig_version = "0.12.0",
+    .minimum_zig_version = "0.14.0",
     .dependencies = .{},
 
     .paths = .{

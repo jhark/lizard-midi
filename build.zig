@@ -14,18 +14,8 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("src/lib/root.zig"),
         },
     );
-
-    const lib = b.addStaticLibrary(.{
-        .name = lib_name,
-        .root_source_file = b.path("src/lib/root.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
-    lib.linkLibC();
-    lib.linkSystemLibrary("Winmm");
-    lib_mod.linkLibrary(lib);
-
-    b.installArtifact(lib);
+    lib_mod.link_libc = true;
+    lib_mod.linkSystemLibrary("Winmm", .{});
 
     const app = b.addExecutable(.{
         .name = "lizard-midi-tool",
